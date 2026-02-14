@@ -55,12 +55,14 @@ class GameClient:
         
         for step in range(max_steps):
             # Agent decides action based on current state and maybe history
+            old_x = self.x
+            old_y = self.y
             action = agent.get_action(self.x, self.y, self.history)
 
             nx, ny, reward, done = self.move(action)
             
             # Record step in current episode
-            current_episode.append((self.x, self.y, action, nx, ny, reward))
+            current_episode.append((old_x, old_y, action, nx, ny, reward))
             
             total_reward += reward
             
