@@ -5,10 +5,11 @@ def frequency(arr: List[int]) -> Dict[int, int]:
     freq = {}
     for num in arr:
         if num in freq:
-            freq[num] += 1
+            freq[int(num)] += 1
         else:
-            freq[num] = 1
-    return freq
+            freq[int(num)] = 1
+    sorted_freq = {k: v for k, v in sorted(freq.items())}
+    return sorted_freq
 
 
 class BanditEnv:

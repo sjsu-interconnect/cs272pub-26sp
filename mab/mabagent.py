@@ -28,16 +28,34 @@ def mabsolver(
     rewards = np.empty(steps, dtype=float)
     q_values = np.empty((steps, K), dtype=float)
 
+
+    a_small_value = 0.00001
     for t in range(1, steps):
 
         if method_name == 'ucb':
-            # TODO: implement UCB action selection
+            # TODO: implement UCB action 
+            
+            for a in range(K):
+                evals[a] = Q[a] + np.sqrt((2 * np.log(t)) / (N[a] + a_small_value))
+
+            maxEval = np.max(evals)
+            candidates = np.flatnonzero(evals == maxEval) 
+            a = int(rng.choice(candidates))
+
+
         elif method_name == 'epsilon_greedy':
-            # TODO: implement epsilon-greedy action selection
+            if rng.random() < epsilon:
+                a = int(rng.integers(0, K))
+            else:
+                maxQ = np.max(Q)
+                candidates = np.flatnonzero(Q == maxQ)
+                a = int(rng.choice(candidates))
 
         r, info = env.step(a)
 
         # TODO: Update Statistics like N and Q
+        N[a] += 1
+        Q[a] += (r - Q[a]) / N[a]
 
         # Save the logs
         actions[t] = a
@@ -62,7 +80,7 @@ if __name__ == "__main__":
         seed=123
     )
 
-    logs = mabsolver(env, steps=5000, epsilon=0.1, init_value=0.0, seed=42, method_name='ucb')
+    logs = mabsolver(env, steps=5_000, epsilon=0.1, init_value=0.0, seed=40, method_name='epsilon_greedy')
 
     actions = logs["actions"]
 
